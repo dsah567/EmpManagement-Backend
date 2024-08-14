@@ -1,7 +1,10 @@
 import mongoose,{Schema} from "mongoose"
 
+const userModels = new Map();
 const getEmpList = (username) => {
-
+    if (userModels.has(username)) {
+        return userModels.get(username);
+    }
     const collectionName = `${username}_collection`;
 
     const employeeSchema = new Schema({
@@ -45,7 +48,7 @@ const getEmpList = (username) => {
 
     
     const EmployeeModel = mongoose.model(collectionName, employeeSchema);
-
+    userModels.set(username, EmployeeModel);
 
     return EmployeeModel;
 };

@@ -33,7 +33,8 @@ const addEmployee=async (req,res)=>{
             if (existedEmp) {
                 throw new ApiError(409, "User with Employee already exists");
               }
-            const newEmp = await Employee.create({
+            
+            const newEmp = new Employee({
                 image: req.file && req.file.buffer , 
                 name,
                 email,
@@ -42,6 +43,7 @@ const addEmployee=async (req,res)=>{
                 gender,
                 courses
             });
+           await newEmp.save();
             console.log(newEmp);
 
             res.status(201).json(new ApiResponse(200,newEmp, 'Employee added successfully'))
@@ -77,7 +79,6 @@ const deleteEmployee=async (req,res)=>{
         try {
             const Employee = getEmpList(req.user.username);
             const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
-            //const deletedEmployee = await deleteEmployee(req.user.username, req.params.id);
             if (!deletedEmployee) {
                 return res.status(404).json({ error: 'Employee not found' });
             }
